@@ -1,0 +1,105 @@
+Before submitting this file, make sure that there are no more TODO
+placeholders remaining in the file (and remove this comment too).
+
+Memory Debugging Warmup
+-----------------------
+Q1. What does the yellow background for a test case indicate in the SimpleTest result window?
+A1.
++ The yellow background says that:
+    "Test had allocation count mismatch with these types:
+     ListNode: Leaked n (some number) object."
++ which indicate : Memory leak detected, so the program stopped there before reaching the EXPECT_EQUAL which is skipped.
+
+
+Q2. What is the observed consequence of a test that uses `delete` on a memory address that has already been deallocated?
+A2.
++ The Lists program has terminated unexpectedly (crashed)
++ An abort error (SIGABRT) was raised during program execution
++ This error is raised by system functions that detect corrupt state
+
+Q3. On your system, what is the observed consequence of `badDeallocate`? Under what circumstances (if any) did the buggy code trigger an error or crash?
+A3.
++ The program passed on samll list (the first test case) while crashed on much longer lists (the second test case)
++ and for the second test case, the system reported an error:
+   " *** The Lists program has terminated unexpectedly (crashed)
+     *** An abort error (SIGABRT) was raised during program execution
+
+     This error is raised by system functions that detect corrupt state"
+
+Q4. How is a segmentation fault presented on your system?
+A4.
++ The fault presented as follows:
+   " *** The Lists program has terminated unexpectedly (crashed)
+     *** A segmentation fault (SIGSEGV) occurred during program execution
+
+     This error indicates your program attempted to dereference a pointer
+     to an invalid memory address (possibly out of bounds, deallocated, nullptr, ...)"
+
+Labyrinth
+---------
+Q5. What is a different legal path through the example labyrinth that gathers all three needed items?
+A5.
++ WNNEWSSEESNWSWWN
+
+Sorting Linked Lists
+---------------------
+Q6. If the `deallocateList` utility function were implemented recursively, give a rough estimate of the maximum length list it could successfully handle. What would be the observed result from attempting to deallocate a list longer than this maximum?
+A6.
++ Given the result from assignement 3, I estimed the maximum stack list could be handled in my system is 261931 stacks, so the
+  maximum length will be 261931^2 = 68607848761, more than that we will got stack overflow error.
+
+Q7. The sort prototype takes a `ListNode*` by reference. Explain why the pointer itself needs to be passed by reference and what the consequence would be if it were not.
+A7.
++ It needs to be pointer by references since the partition step can't return 3 results list. If the pointers are not passed
+  using references and used another `possible` approach, it can fill up the memory quickly since at each recursive call, it
+  will make more sub copies of the original list, and returning sublists will be more complicated (may be put all three into
+  a bigger list).
+
+Q8. Run time trials and provide your results that confirm that RunSort is O(N^2) . Verify you can achieve O(N) results on inputs constructed to play to its strengths.
+A8.
++ RunSort is O(N^2).
+[SimpleTest] starting (STUDENT_TEST, sorting.cpp:674) Confirm runSort has O(N^2) run...  =  Correct
+    Line 682 TIME_OPERATION runSort(list) (size =    50000) completed in    0.593 secs
+    Line 682 TIME_OPERATION runSort(list) (size =   100000) completed in    2.383 secs
+    Line 682 TIME_OPERATION runSort(list) (size =   200000) completed in    9.688 secs
+    Line 682 TIME_OPERATION runSort(list) (size =   400000) completed in   52.106 secs
+
++ RunSort can achieve O(N) results on case sorted.
+[SimpleTest] starting (STUDENT_TEST, sorting.cpp:661) Confirm runSort has O(N) runti...  =  Correct
+    Line 669 TIME_OPERATION runSort(list) (size =   500000) completed in    0.002 secs
+    Line 669 TIME_OPERATION runSort(list) (size =  1000000) completed in    0.004 secs
+    Line 669 TIME_OPERATION runSort(list) (size =  2000000) completed in    0.006 secs
+    Line 669 TIME_OPERATION runSort(list) (size =  4000000) completed in    0.015 secs
+
+Q9. Run time trials and provide your results that confirm that QuickSort is O(NlogN) . Verify the runtime degrades to O(N^2) on inputs constructed to trigger the worst case behavior.
+A9.
++ QuickSort is O(NlogN)
+[SimpleTest] starting (STUDENT_TEST, sorting.cpp:687) Confirm quickSort has O(NlogN)...  =  Correct
+    Line 697 TIME_OPERATION runSort(list) (size =     5000) completed in    0.028 secs
+    Line 697 TIME_OPERATION runSort(list) (size =    10000) completed in    0.093 secs
+    Line 697 TIME_OPERATION runSort(list) (size =    20000) completed in    0.320 secs
+    Line 697 TIME_OPERATION runSort(list) (size =    40000) completed in    1.222 secs
+
++ QuickSort has O(N^2) results on worst case reversed sorted.
+[SimpleTest] starting (STUDENT_TEST, sorting.cpp:703) Confirm quickSort has O(N^2) r...  =  Correct
+    Line 711 TIME_OPERATION quickSort(list) (size =   500000) completed in    0.779 secs
+    Line 711 TIME_OPERATION quickSort(list) (size =  1000000) completed in    2.107 secs
+    Line 711 TIME_OPERATION quickSort(list) (size =  2000000) completed in    2.056 secs
+
+
+Q10. Run the provided timing trials that compare your linked list QuickSort to a Vector sort on the same sequence and report the results. Who wins and why?
+A10.
+
++ The result of comparing linked list QuickSort to a Vector sort on the same sequence.
+[SimpleTest] starting (STUDENT_TEST, sorting.cpp:718) Time linked list quicksort vs ...  =  Correct
+    Line 730 TIME_OPERATION quickSort(list) (size =    50000) completed in    0.010 secs
+    Line 731 TIME_OPERATION v.sort() (size =    50000) completed in    0.192 secs
+    Line 730 TIME_OPERATION quickSort(list) (size =   100000) completed in    0.021 secs
+    Line 731 TIME_OPERATION v.sort() (size =   100000) completed in    0.396 secs
+    Line 730 TIME_OPERATION quickSort(list) (size =   200000) completed in    0.046 secs
+    Line 731 TIME_OPERATION v.sort() (size =   200000) completed in    0.775 secs
+    Line 730 TIME_OPERATION quickSort(list) (size =   400000) completed in    0.100 secs
+    Line 731 TIME_OPERATION v.sort() (size =   400000) completed in    1.417 secs
+
++ QuickSort bested Vector sort in term of speed, however the runtime of SV is more like linear O(N) while QuickSort is NlogN,
+  so we can guess in the longer sequences, Vector sort will beats QuickSort.
